@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Результати пошуку</title>
+    <link data-th-href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link data-th-href="@{/css/main.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-6 offset-md-3">
+            <form id="search-form" th:action="@{/search}" method="get">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="keyword" id="searchText"
+                           placeholder="Пошук">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Знайти</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row mt-3 ml-4 ">
+        <p>знайдено результатів: <span th:text="${totalSearchResults}"></span> ;&nbsp;&nbsp;</p>
+        <p>пошук тривав: <span th:text="${executionTime}"></span> мс</p>
+    </div>
+    <div class="row">
+        <ul class="result" th:each="webPage : ${searchResult.content}">
+            <li th:text="${webPage.pageDump}"></li>
+            <li th:text="${webPage.id}"></li>
+            <li><a th:href="${webPage.url}"><span th:text="${webPage.url}"></span></a></li>
+            <li class="border-bottom"></li>
+        </ul>
+        <nav aria-label="Pagination" th:if="${totalPages > 0}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a th:replace="fragments/paging :: paging(1, '<<', 'First Page')"></a>
+                </li>
+                <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a th:replace="fragments/paging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
+                </li>
+                <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
+                    <a class="page-link" href="#">...</a>
+                </li>
+                <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
+                    th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1,  currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
+                    <a th:replace="fragments/paging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+                </li>
+                <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
+                    <a class="page-link" href="#">...</a>
+                </li>
+                <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a th:replace="fragments/paging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a th:replace="fragments/paging :: paging(${totalPages}, '>>', 'Last Page')"></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+</body>
+</html>
