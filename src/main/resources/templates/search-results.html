@@ -25,13 +25,22 @@
         <p>пошук тривав: <span th:text="${executionTime}"></span> мс</p>
     </div>
     <div class="row">
-        <ul class="result" th:each="webPage : ${searchResult.content}">
-            <li th:text="${webPage.pageDump}"></li>
-            <li th:text="${webPage.id}"></li>
-            <li><a th:href="${webPage.url}"><span th:text="${webPage.url}"></span></a></li>
-            <li class="border-bottom"></li>
+        <ul class="result" th:each="webPage : ${searchResult}">
+            <li>
+                 <span th:text="${webPage.id}"></span>
+            </li>
+            <li>
+                 <a th:href="${webPage.url}" th:text="${webPage.url}"></a>
+            </li>
+            <li>
+                <span th:utext="${webPage.page}"></span>
+            </li>
+<!--            <li>-->
+<!--                <a th:href="${webPage.fullPageDumpUrl}" target="_blank">Перейти до сторінки</a>-->
+<!--            </li>-->
         </ul>
     </div>
+
     <div class="row">
         <nav aria-label="Pagination" class="nav justify-content-center" th:if="${totalPages > 0}">
             <ul class="pagination justify-content-center">

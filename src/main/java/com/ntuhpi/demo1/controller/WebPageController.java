@@ -1,6 +1,7 @@
 package com.ntuhpi.demo1.controller;
 
 import com.ntuhpi.demo1.model.WebPage;
+import com.ntuhpi.demo1.model.WebPageDTO;
 import com.ntuhpi.demo1.service.WebPageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class WebPageController {
@@ -26,20 +30,44 @@ public class WebPageController {
         return "index";
     }
 
+
     @GetMapping("/search")
-    public String search(@RequestParam(name = "keyword",required = false) String keyword,
+    public String search(@RequestParam(name = "keyword", required = false) String keyword,
                          @RequestParam(name = "page", defaultValue = "1") int page,
                          @RequestParam(name = "size", defaultValue = "5") int size,
                          Model model) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        Pageable pageable = PageRequest.of(page-1, size);
+        Pageable pageable = PageRequest.of(page - 1, size);
         Page<WebPage> searchResult = webPageService.searchWebPages(keyword, pageable);
+
+        List<WebPageDTO> webPageDTOList = searchResult.getContent().stream()
+                .map(webPage -> {
+                    WebPageDTO dto = new WebPageDTO();
+                    dto.setId(webPage.getId());
+                    dto.setUrl(webPage.getUrl());
+
+                    // Встановлюємо частину pageDump, яка містить пошуковий запит
+                    String pageDump = webPage.getPageDump();
+                    // Ваша логіка для виділення частини pageDump
+                    int keywordIndex = pageDump.indexOf(keyword);
+                    int startIndex = Math.max(0, keywordIndex - 200); // Початок від ключового слова - 100 символів
+                    int endIndex = Math.min(pageDump.length(), keywordIndex + 200 + keyword.length()); // Кінець від ключового слова + 100 символів
+                    pageDump = pageDump.substring(startIndex, endIndex);
+//                    dto.setPage(pageDump);
+                    String pageDumpWithHighlight = pageDump.replace(keyword, "<span style='background-color: yellow;'>" + keyword + "</span>");
+                    dto.setPage(pageDumpWithHighlight);
+                    // Встановлюємо посилання на повний pageDump
+                    dto.setFullPageDumpUrl(webPage.getUrl());
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
 
         stopWatch.stop();
         long executionTime = stopWatch.getTotalTimeMillis();
 
-        model.addAttribute("searchResult", searchResult);
+        model.addAttribute("searchResult", webPageDTOList);
         model.addAttribute("keyword", keyword);
         model.addAttribute("pageSize", size);
         model.addAttribute("executionTime", executionTime);
@@ -49,4 +77,7 @@ public class WebPageController {
 
         return "search-results";
     }
+
 }
+
+

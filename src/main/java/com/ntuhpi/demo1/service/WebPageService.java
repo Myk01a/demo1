@@ -6,7 +6,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface WebPageService {
     WebPage saveWebPage(WebPage webPage);
+
     void deleteWebPage(String id);
     Page<WebPage> searchWebPages(String keyword, Pageable pageable);
+    Page<String> searchWebPageContent(String keyword, Pageable pageable);
 }
 
