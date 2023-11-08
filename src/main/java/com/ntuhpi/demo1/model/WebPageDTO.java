@@ -1,11 +1,11 @@
 package com.ntuhpi.demo1.model;
 
 public class WebPageDTO {
-    public WebPageDTO(String id, String url, String page, String fullPageDumpUrl) {
+    public WebPageDTO(String id, String url, String page, String fullPageDump) {
         this.id = id;
         this.url = url;
         this.page = page;
-        this.fullPageDumpUrl = fullPageDumpUrl;
+        this.fullPageDump = fullPageDump;
     }
 
     public WebPageDTO() {
@@ -13,8 +13,8 @@ public class WebPageDTO {
 
     private String id;
     private String url;
-    private String page; // Частина pageDump, яка містить пошуковий запит
-    private String fullPageDumpUrl; // Посилання на повний pageDump
+    private String page;
+    private String fullPageDump;
 
     public String getId() {
         return id;
@@ -40,13 +40,12 @@ public class WebPageDTO {
         this.page = page;
     }
 
-    public String getFullPageDumpUrl() {
-        return fullPageDumpUrl;
+    public String getFullPageDump() {
+        return fullPageDump;
     }
 
-    public void setFullPageDumpUrl(String fullPageDumpUrl) {
-        this.fullPageDumpUrl = fullPageDumpUrl;
+    public void setFullPageDump(String fullPageDump) {
+        this.fullPageDump = fullPageDump;
     }
-// Конструктори, геттери та сеттери
 }
 

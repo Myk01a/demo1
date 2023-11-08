@@ -11,9 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -30,6 +32,16 @@ public class WebPageController {
         return "index";
     }
 
+    @GetMapping("/cache/{id}")
+    public String viewCachePage(@PathVariable String id, Model model) {
+        Optional<WebPage> webPage = webPageService.getWebPageById(id);
+        if (webPage != null) {
+            model.addAttribute("content", webPage.get().getPageDump());
+
+            return "cache";
+        }
+        return "404";
+    }
 
     @GetMapping("/search")
     public String search(@RequestParam(name = "keyword", required = false) String keyword,
@@ -46,19 +58,16 @@ public class WebPageController {
                     WebPageDTO dto = new WebPageDTO();
                     dto.setId(webPage.getId());
                     dto.setUrl(webPage.getUrl());
+                    dto.setFullPageDump(webPage.getPageDump());
 
-                    // Встановлюємо частину pageDump, яка містить пошуковий запит
                     String pageDump = webPage.getPageDump();
-                    // Ваша логіка для виділення частини pageDump
                     int keywordIndex = pageDump.indexOf(keyword);
-                    int startIndex = Math.max(0, keywordIndex - 200); // Початок від ключового слова - 100 символів
-                    int endIndex = Math.min(pageDump.length(), keywordIndex + 200 + keyword.length()); // Кінець від ключового слова + 100 символів
+                    int startIndex = Math.max(0, keywordIndex - 200);
+                    int endIndex = Math.min(pageDump.length(), keywordIndex + 200 + keyword.length());
                     pageDump = pageDump.substring(startIndex, endIndex);
-//                    dto.setPage(pageDump);
                     String pageDumpWithHighlight = pageDump.replace(keyword, "<span style='background-color: yellow;'>" + keyword + "</span>");
                     dto.setPage(pageDumpWithHighlight);
-                    // Встановлюємо посилання на повний pageDump
-                    dto.setFullPageDumpUrl(webPage.getUrl());
+
 
                     return dto;
                 })

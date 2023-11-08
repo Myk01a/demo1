@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class WebPageServiceImpl implements WebPageService {
     private final WebPageRepository webPageRepository;
@@ -17,8 +19,8 @@ public class WebPageServiceImpl implements WebPageService {
     }
 
     @Override
-    public WebPage saveWebPage(WebPage webPage) {
-        return webPageRepository.save(webPage);
+    public void saveWebPage(WebPage webPage) {
+         webPageRepository.save(webPage);
     }
 
     @Override
@@ -34,6 +36,11 @@ public class WebPageServiceImpl implements WebPageService {
     public Page<String> searchWebPageContent(String keyword, Pageable pageable) {
         Page<WebPage> searchResult = webPageRepository.findByPageDumpContaining(keyword, pageable);
         return searchResult.map(webPage -> extractContentWithKeyword(webPage, keyword));
+    }
+
+    @Override
+    public Optional<WebPage> getWebPageById(String id) {
+        return webPageRepository.getById(id);
     }
 
     private String extractContentWithKeyword(WebPage webPage, String keyword) {

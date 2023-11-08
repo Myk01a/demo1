@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link data-th-href="@{/css/bootstrap.min.css}" rel="stylesheet">
+  <link data-th-href="@{/css/main.css}" rel="stylesheet">
+</head>
+<body>
+<h1>Web Crawler Results</h1>
+<p>These are the web pages found during the crawling process:</p>
+<ul>
+  <li th:each="webPage, stat : ${webPages}">
+    <span th:text="${stat.count}"></span>.
+    <a th:href="@{${webPage.url}}" th:text="${webPage.url}"></a>
+  </li>
+</ul>
+<p>Total Web Pages: <span th:text="${#lists.size(webPages)}"></span></p>
+
+<!-- You can customize the presentation of web pages as needed -->
+</body>
+</html>
+
