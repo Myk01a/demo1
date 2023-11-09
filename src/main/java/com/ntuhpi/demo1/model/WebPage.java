@@ -10,12 +10,24 @@ public class WebPage {
     private String id;
     private String url;
     private String pageDump;
+    private String fullPageDump;
+
+    public String getFullPageDump() {
+        return fullPageDump;
+    }
+
+    public void setFullPageDump(String fullPageDump) {
+        this.fullPageDump = fullPageDump;
+    }
+
+
 
     public WebPage() {}
 
-    public WebPage(String url, String pageDump) {
+    public WebPage(String url, String pageDump, String fullPageDump) {
         this.url = url;
         this.pageDump = pageDump;
+        this.fullPageDump = fullPageDump;
     }
 
     // Геттери і сеттери для полів id, url і pageDump

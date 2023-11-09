@@ -28,7 +28,9 @@ public class WebCrawlerService {
             }
 
             String pageDump = document.text();
-            WebPage webPage = new WebPage(url, pageDump);
+            String fullPageDump = document.html();
+//            String fullPageDump = document.select("href").remove().text();
+            WebPage webPage = new WebPage(url, pageDump, fullPageDump);
             saveWebPage(webPage);
             return webPage;
         } catch (IOException e) {

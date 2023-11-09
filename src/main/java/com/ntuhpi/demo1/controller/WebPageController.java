@@ -36,7 +36,7 @@ public class WebPageController {
     public String viewCachePage(@PathVariable String id, Model model) {
         Optional<WebPage> webPage = webPageService.getWebPageById(id);
         if (webPage != null) {
-            model.addAttribute("content", webPage.get().getPageDump());
+            model.addAttribute("content", webPage.get().getFullPageDump());
 
             return "cache";
         }
@@ -58,7 +58,7 @@ public class WebPageController {
                     WebPageDTO dto = new WebPageDTO();
                     dto.setId(webPage.getId());
                     dto.setUrl(webPage.getUrl());
-                    dto.setFullPageDump(webPage.getPageDump());
+                    dto.setFullPageDump(webPage.getFullPageDump());
 
                     String pageDump = webPage.getPageDump();
                     int keywordIndex = pageDump.indexOf(keyword);
