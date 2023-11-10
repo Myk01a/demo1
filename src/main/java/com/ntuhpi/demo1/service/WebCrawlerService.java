@@ -23,24 +23,20 @@ public class WebCrawlerService {
         try {
             Document document = Jsoup.connect(url).get();
             if (!isHtmlPage(document)) {
-                // If it's not an HTML page, skip it
                 return null;
             }
 
             String pageDump = document.text();
             String fullPageDump = document.html();
-//            String fullPageDump = document.select("href").remove().text();
             WebPage webPage = new WebPage(url, pageDump, fullPageDump);
             saveWebPage(webPage);
             return webPage;
         } catch (IOException e) {
-            // If an error occurs while loading, skip it
             return null;
         }
     }
 
     private boolean isHtmlPage(Document document) {
-        // Check if the page is HTML
         String type = String.valueOf(document.documentType());
         return document != null && "<!doctype html>".equalsIgnoreCase(type);
     }

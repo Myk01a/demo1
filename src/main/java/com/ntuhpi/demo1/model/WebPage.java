@@ -30,7 +30,6 @@ public class WebPage {
         this.fullPageDump = fullPageDump;
     }
 
-    // Геттери і сеттери для полів id, url і pageDump
 
     public String getId() {
         return id;

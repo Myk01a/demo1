@@ -46,7 +46,7 @@ public class WebCrawlerController {
         String url = webCrawlRequest.getUrl();
         String domain = getDomain(url);
         HashSet<String> foundUrls = new HashSet<>();
-        foundUrls.add(url); // Add the initial URL to the set
+        foundUrls.add(url);
         recursiveCrawl(url, domain, foundUrls);
 
         List<WebPage> webPages = new ArrayList<>();
@@ -67,7 +67,6 @@ public class WebCrawlerController {
 
     private void recursiveCrawl(String url, String domain, HashSet<String> foundUrls) {
         if (foundUrls.size() >= 100) {
-            // Stop crawling after finding 100 URLs to prevent infinite recursion
             return;
         }
 
@@ -93,13 +92,11 @@ public class WebCrawlerController {
             String host = parsedUrl.getHost();
             return host;
         } catch (Exception e) {
-            // Handle the exception (e.g., invalid URL)
             return "";
         }
     }
 
     private boolean isInDomain(String url, String domain) {
-        // Check if the URL starts with the domain or any subdomain
         return url.startsWith(domain) || url.matches("https?://([a-zA-Z0-9.-]+\\.)?" + domain + "(/.*)?");
     }
 
