@@ -32,11 +32,15 @@ public class WebPageController {
         return "index";
     }
 
-    @GetMapping("/cache/{id}")
-    public String viewCachePage(@PathVariable String id, Model model) {
-        Optional<WebPage> webPage = webPageService.getWebPageById(id);
+    @GetMapping("/cache/{id}/{keyword}")
+    public String viewCachePage(@PathVariable String id, Model model, @PathVariable String keyword) {
+        WebPageDTO webPage = webPageService.getWebPageById(id);
         if (webPage != null) {
-            model.addAttribute("content", webPage.get().getFullPageDump());
+            String fullPageDump = webPage.getFullPageDump();
+            String fullPageDumpWithHighlight = fullPageDump.replace(keyword, "<span style='background-color: yellow;'>" + keyword + "</span>");
+            webPage.setFullPageDump(fullPageDumpWithHighlight);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("content", webPage.getFullPageDump());
             model.addAttribute("id", id);
             return "cache";
         }
@@ -67,6 +71,8 @@ public class WebPageController {
                     pageDump = pageDump.substring(startIndex, endIndex);
                     String pageDumpWithHighlight = pageDump.replace(keyword, "<span style='background-color: yellow;'>" + keyword + "</span>");
                     dto.setPage(pageDumpWithHighlight);
+
+
 
 
                     return dto;

@@ -1,10 +1,9 @@
 package com.ntuhpi.demo1.service;
 
 import com.ntuhpi.demo1.model.WebPage;
+import com.ntuhpi.demo1.model.WebPageDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
 
 public interface WebPageService {
     void saveWebPage(WebPage webPage);
@@ -13,6 +12,6 @@ public interface WebPageService {
     Page<WebPage> searchWebPages(String keyword, Pageable pageable);
     Page<String> searchWebPageContent(String keyword, Pageable pageable);
 
-    Optional<WebPage> getWebPageById(String id);
+    WebPageDTO getWebPageById(String id);
 }
 

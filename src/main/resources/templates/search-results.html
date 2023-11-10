@@ -36,7 +36,7 @@
                 <span th:utext="${webPage.page}"></span>
             </li>
             <li>
-                <a th:href="@{'/cache/' + ${webPage.id}}" target="_blank">кеш</a>
+                <a th:href="@{'/cache/' + ${webPage.id} +'/'+ ${keyword}}" target="_blank">кеш</a>
             </li>
         </ul>
     </div>
