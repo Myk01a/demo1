@@ -37,7 +37,7 @@ public class WebPageController {
         Optional<WebPage> webPage = webPageService.getWebPageById(id);
         if (webPage != null) {
             model.addAttribute("content", webPage.get().getFullPageDump());
-
+            model.addAttribute("id", id);
             return "cache";
         }
         return "404";

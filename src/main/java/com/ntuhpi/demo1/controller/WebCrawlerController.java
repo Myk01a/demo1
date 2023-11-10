@@ -10,6 +10,7 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URL;
@@ -40,6 +41,8 @@ public class WebCrawlerController {
     @PostMapping("/site")
     public String webCrawlerSubmit(@ModelAttribute WebCrawlRequest webCrawlRequest,
                                    Model model) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         String url = webCrawlRequest.getUrl();
         String domain = getDomain(url);
         HashSet<String> foundUrls = new HashSet<>();
@@ -55,6 +58,9 @@ public class WebCrawlerController {
             }
         }
         model.addAttribute("webPages", webPages);
+        stopWatch.stop();
+        long executionTime = stopWatch.getTotalTimeMillis();
+        System.out.println("executionTime: "+ executionTime);
         return "result";
     }
 
