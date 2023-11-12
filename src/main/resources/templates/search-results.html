@@ -33,7 +33,7 @@
                  <a th:href="${webPage.url}" th:text="${webPage.url}"></a>
             </li>
             <li>
-                <span th:utext="${webPage.page}"></span>
+                <span th:utext="${webPage.pageDump}"></span>
             </li>
             <li>
                 <a th:href="@{'/cache/' + ${webPage.id} +'/'+ ${keyword}}" target="_blank">кеш</a>

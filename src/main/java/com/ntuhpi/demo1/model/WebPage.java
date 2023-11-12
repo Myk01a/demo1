@@ -1,6 +1,7 @@
 package com.ntuhpi.demo1.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
@@ -9,24 +10,29 @@ public class WebPage {
     @Id
     private String id;
     private String url;
+    @Indexed
     private String pageDump;
     private String fullPageDump;
 
+    public WebPage() {}
+
+    public WebPage(String id, String url, String pageDump, String fullPageDump) {
+        this.id = id;
+        this.url = url;
+        this.pageDump = pageDump;
+        this.fullPageDump = fullPageDump;
+    }
+
+    public WebPage(String url, String pageDump, String fullPageDump) {
+        this.url = url;
+        this.pageDump = pageDump;
+        this.fullPageDump = fullPageDump;
+    }
     public String getFullPageDump() {
         return fullPageDump;
     }
 
     public void setFullPageDump(String fullPageDump) {
-        this.fullPageDump = fullPageDump;
-    }
-
-
-
-    public WebPage() {}
-
-    public WebPage(String url, String pageDump, String fullPageDump) {
-        this.url = url;
-        this.pageDump = pageDump;
         this.fullPageDump = fullPageDump;
     }
 

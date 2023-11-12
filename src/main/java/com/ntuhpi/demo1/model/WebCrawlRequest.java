@@ -4,7 +4,6 @@ public class WebCrawlRequest {
     private String url;
 
     public WebCrawlRequest() {
-        // Default constructor
     }
 
     public String getUrl() {
