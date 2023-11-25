@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class WebPageServiceImpl implements WebPageService {
@@ -23,7 +24,7 @@ public class WebPageServiceImpl implements WebPageService {
 
     @Override
     public Page<WebPage> searchWebPagesSimple(String keyword, Pageable pageable) {
-        return webPageRepository.findByPageDumpContaining(keyword, pageable);
+        return webPageRepository.findByPageDumpContainingIgnoreCase(keyword, pageable);
     }
 
     @Override
@@ -39,20 +40,11 @@ public class WebPageServiceImpl implements WebPageService {
 
     @Override
     public WebPage processUrl(String url) {
-        try {
-            Document document = Jsoup.connect(url).get();
-            if (!isHtmlPage(document)) {
-                return null;
-            }
-
-            String pageDump = document.text();
-            String fullPageDump = document.html();
-            WebPage webPage = new WebPage(url, pageDump, fullPageDump);
-            saveWebPage(webPage);
-            return webPage;
-        } catch (IOException e) {
-            return null;
-        }
+        return createWebPage(url).orElse(null);
+    }
+    @Override
+    public long countWebPages() {
+        return webPageRepository.count();
     }
 
     private boolean isHtmlPage(Document document) {
@@ -63,6 +55,23 @@ public class WebPageServiceImpl implements WebPageService {
     private void saveWebPage(WebPage webPage) {
         if (webPage != null) {
             webPageRepository.save(webPage);
+        }
+    }
+
+    private Optional<WebPage> createWebPage(String url) {
+        try {
+            Document document = Jsoup.connect(url).get();
+            if (!isHtmlPage(document)) {
+                return Optional.empty();
+            }
+            String pageDump = document.text();
+            String fullPageDump = document.html();
+            String title = document.title();
+            WebPage webPage = new WebPage(url, pageDump, fullPageDump, title);
+            saveWebPage(webPage);
+            return Optional.of(webPage);
+        } catch (IOException e) {
+            return Optional.empty();
         }
     }
 

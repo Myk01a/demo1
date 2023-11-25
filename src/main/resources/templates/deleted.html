@@ -1,15 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Data Deleted</title>
     <link data-th-href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <link data-th-href="@{/css/main.css}" rel="stylesheet">
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+        }
+
+        .success-container {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #d6d8db;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        h1 {
+            font-size: 4rem;
+            color: #28a745;
+        }
+
+        p {
+            font-size: 1.5rem;
+            color: #6c757d;
+        }
+
+        .btn-primary {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<h1>Data Deleted</h1>
-<p>All data has been deleted from the database.</p>
-<a th:href="@{/site}" class="btn btn-primary">Back to Crawler</a>
+<div class="success-container">
+    <h1>Data Deleted</h1>
+    <p>Всі дані з бази даних були видалені</p>
+    <a href="/site" class="btn btn-primary">Повернутись</a>
+</div>
 </body>
 </html>
+

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface WebPageService {
     Page<WebPage> searchWebPages(String keyword, Pageable pageable);
+
     Page<WebPage> searchWebPagesSimple(String keyword, Pageable pageable);
 
     WebPage getWebPageById(String id);
@@ -13,5 +14,7 @@ public interface WebPageService {
     void deleteAll();
 
     WebPage processUrl(String url);
+
+    long countWebPages();
 }
 

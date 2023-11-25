@@ -1,13 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link data-th-href="@{/css/bootstrap.min.css}" rel="stylesheet">
-    <link data-th-href="@{/css/main.css}" rel="stylesheet">
+    <title>404 Not Found</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 100px;
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .error-code {
+            font-size: 120px;
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .error-message {
+            font-size: 24px;
+            color: #495057;
+        }
+
+        .back-home {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<h1>Такої сторінки немає</h1>
+
+<div class="container">
+    <div class="error-container">
+        <div class="error-code">404</div>
+        <div class="error-message">Такої сторінки не існує</div>
+        <p class="back-home"><a href="/">Повернутись на головну</a></p>
+    </div>
+</div>
+
 </body>
 </html>

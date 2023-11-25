@@ -12,22 +12,28 @@ public class WebPage {
     private String url;
     @Indexed
     private String pageDump;
+
+    private String title;
     private String fullPageDump;
 
-    public WebPage() {}
+    public WebPage() {
+    }
 
-    public WebPage(String id, String url, String pageDump, String fullPageDump) {
+    public WebPage(String id, String url, String pageDump, String title, String fullPageDump) {
         this.id = id;
         this.url = url;
         this.pageDump = pageDump;
+        this.title = title;
         this.fullPageDump = fullPageDump;
     }
 
-    public WebPage(String url, String pageDump, String fullPageDump) {
+    public WebPage(String url, String pageDump, String fullPageDump, String title) {
         this.url = url;
         this.pageDump = pageDump;
         this.fullPageDump = fullPageDump;
+        this.title = title;
     }
+
     public String getFullPageDump() {
         return fullPageDump;
     }
@@ -51,6 +57,14 @@ public class WebPage {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public String getPageDump() {

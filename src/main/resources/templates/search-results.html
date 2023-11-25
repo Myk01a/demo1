@@ -2,8 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Результати пошуку</title>
-    <link data-th-href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <link data-th-href="@{/css/main.css}" rel="stylesheet">
+    <link data-th-href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
 </head>
 <body>
 <div class="container">
@@ -25,19 +26,21 @@
         <p>пошук тривав: <span th:text="${executionTime}"></span> мс</p>
     </div>
     <div class="row">
-        <ul class="result" th:each="webPage : ${searchResult}">
-            <li>
-                 <span th:text="${webPage.id}"></span>
+        <ul class="result list-group" th:each="webPage : ${searchResult}">
+            <li >
+                <div th:utext="${webPage.title}" style="font-size: 18px; color: #6c757d; font-weight: bold;"></div>
             </li>
-            <li>
+            <li >
                  <a th:href="${webPage.url}" th:text="${webPage.url}"></a>
             </li>
-            <li>
+            <li >
                 <span th:utext="${webPage.pageDump}"></span>
             </li>
-            <li>
+            <li >
+                <span th:text="${webPage.id}"></span>
                 <a th:href="@{'/cache/' + ${webPage.id} +'/'+ ${keyword}}" target="_blank">кеш</a>
             </li>
+            <li class="pt-5 ">  </li>
         </ul>
     </div>
 

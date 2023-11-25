@@ -1,11 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Web Crawler Results</title>
   <link data-th-href="@{/css/bootstrap.min.css}" rel="stylesheet">
   <link data-th-href="@{/css/main.css}" rel="stylesheet">
+  <style>
+    body {
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #007bff;
+    }
+
+    p {
+      font-size: 1.5rem;
+      color: #6c757d;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .btn-primary {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
 <h1>Web Crawler Results</h1>
@@ -17,6 +54,10 @@
   </li>
 </ul>
 <p>Total Web Pages: <span th:text="${#lists.size(webPages)}"></span></p>
+<a href="/" class="btn btn-primary">Back to Home</a>
+</body>
+</html>
+
 
 <!-- You can customize the presentation of web pages as needed -->
 </body>

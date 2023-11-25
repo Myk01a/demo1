@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -44,12 +45,8 @@ public class WebPageController {
         WebPage webPage = webPageService.getWebPageById(id);
         if (webPage != null) {
             String fullPageDump = webPage.getFullPageDump();
-            Pattern pattern = Pattern.compile(keyword, Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(fullPageDump);
-
-            String fullPageDumpWithHighlight = matcher.replaceAll("<span style='background-color: yellow;'>$0</span>");
-            webPage.setFullPageDump(fullPageDumpWithHighlight);
-
+            String highlighted = highlight(keyword, fullPageDump);
+            webPage.setFullPageDump(highlighted);
             model.addAttribute("keyword", keyword);
             model.addAttribute("content", webPage.getFullPageDump());
             model.addAttribute("id", id);
@@ -58,45 +55,77 @@ public class WebPageController {
         return "404";
     }
 
+    private String highlight(String keyword, String fullPageDump) {
+        if (!containsWhitespace(keyword)) {
+            Pattern pattern = Pattern.compile(keyword, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(fullPageDump);
+            return matcher.replaceAll("<span style='background-color: yellow;'>$0</span>");
+        } else {
+            String[] words = keyword.split("\\s+");
+            for (String word : words) {
+                Pattern pattern = Pattern.compile("\\b" + Pattern.quote(word) + "\\b", Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(fullPageDump);
+                fullPageDump = matcher.replaceAll("<span style='background-color: yellow;'>$0</span>");
+            }
+            return fullPageDump;
+        }
+    }
+
+    private boolean containsWhitespace(String input) {
+        return input != null && input.contains(" ");
+    }
+
 
     @GetMapping("/search")
     public String search(@RequestParam(name = "keyword", required = false) String keyword,
                          @RequestParam(name = "page", defaultValue = "1") int page,
                          @RequestParam(name = "size", defaultValue = "5") int size,
                          Model model) {
+        try {
 
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<WebPage> searchResult = webPageService.searchWebPages(keyword, pageable);
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
+            Pageable pageable = PageRequest.of(page - 1, size);
+            Page<WebPage> searchResult = webPageService.searchWebPages(keyword, pageable);
 
-        List<WebPage> webPageList = searchResult.getContent();
+            List<WebPage> webPageList = searchResult.getContent();
+            if (webPageList.size() == 0) {
+                searchResult = webPageService.searchWebPagesSimple(keyword, pageable);
+                webPageList = searchResult.getContent();
+            }
 
-        for (WebPage webPage : webPageList) {
-            String pageDump = webPage.getPageDump();
-            int keywordIndex = pageDump.indexOf(keyword);
-            int startIndex = Math.max(0, keywordIndex - 200);
-            int endIndex = Math.min(pageDump.length(), keywordIndex + 200 + keyword.length());
-            String pageDumpWithHighlight = pageDump.substring(startIndex, endIndex)
-                    .replace(keyword, "<span style='background-color: yellow;'>" + keyword + "</span>");
-            webPage.setPageDump(pageDumpWithHighlight);
+            for (WebPage webPage : webPageList) {
+                String pageDump = webPage.getPageDump();
+                int keywordIndex = pageDump.indexOf(keyword);
+                int startIndex = Math.max(0, keywordIndex - 200);
+                int endIndex = Math.min(pageDump.length(), keywordIndex + 200 + keyword.length());
+                String pageDumpWithHighlight = pageDump.substring(startIndex, endIndex);
+                webPage.setPageDump(highlight(keyword, pageDumpWithHighlight));
+                String title = webPage.getTitle();
+                webPage.setTitle(highlight(keyword, title));
+            }
+
+            stopWatch.stop();
+            long executionTime = stopWatch.getTotalTimeMillis();
+
+            model.addAttribute("searchResult", webPageList);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("pageSize", size);
+            model.addAttribute("executionTime", executionTime);
+            model.addAttribute("totalPages", searchResult.getTotalPages());
+            model.addAttribute("totalSearchResults", searchResult.getTotalElements());
+            model.addAttribute("currentPage", searchResult.getNumber() + 1);
+
+            return "search-results";
+        } catch (InvalidDataAccessApiUsageException e) {
+            return "404";
         }
-
-        stopWatch.stop();
-        long executionTime = stopWatch.getTotalTimeMillis();
-
-        model.addAttribute("searchResult", webPageList);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("pageSize", size);
-        model.addAttribute("executionTime", executionTime);
-        model.addAttribute("totalPages", searchResult.getTotalPages());
-        model.addAttribute("totalSearchResults", searchResult.getTotalElements());
-        model.addAttribute("currentPage", searchResult.getNumber() + 1);
-
-        return "search-results";
     }
+
     @GetMapping("/site")
     public String webCrawlerForm(Model model) {
+        long pageCount = webPageService.countWebPages();
+        model.addAttribute("pageCount", pageCount);
         model.addAttribute("webCrawlRequest", new WebCrawlRequest());
         return "crawler";
     }
@@ -106,6 +135,7 @@ public class WebPageController {
         webPageService.deleteAll();
         return "deleted";
     }
+
     @PostMapping("/site")
     public String webCrawlerSubmit(@ModelAttribute WebCrawlRequest webCrawlRequest,
                                    Model model) {
@@ -128,7 +158,7 @@ public class WebPageController {
         model.addAttribute("webPages", webPages);
         stopWatch.stop();
         long executionTime = stopWatch.getTotalTimeMillis();
-        System.out.println("executionTime: "+ executionTime);
+        System.out.println("executionTime: " + executionTime);
         return "result";
     }
 
@@ -166,6 +196,11 @@ public class WebPageController {
 
     private boolean isInDomain(String url, String domain) {
         return url.startsWith(domain) || url.matches("https?://([a-zA-Z0-9.-]+\\.)?" + domain + "(/.*)?");
+    }
+
+    @RequestMapping("*")
+    public String handleNotFound() {
+        return "404";
     }
 
 
